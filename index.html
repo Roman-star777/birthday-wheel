@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Колесо фортуны</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marck+Script&family=Manrope:wght@400;500;700;800&display=swap">
+<style>
+/* Layout: one phone-width column; a blush card with a big wheel in the middle. Single light look by choice. */
+:root{
+  color-scheme:light;
+  --bg:#f7e9e6; --paper:#fffaf7; --ink:#4a2433; --muted:#8c6670;
+  --rose:#d9737f; --rose-soft:#f2cfd0; --gold:#c9974a; --gold-soft:#f4e1b8; --peach:#f6dccb; --line:#ead3d0;
+  --f-display:"Marck Script","Segoe Script",cursive;
+  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  padding:20px 16px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-top:max(20px,env(safe-area-inset-top,0px));padding-bottom:max(20px,env(safe-area-inset-bottom,0px));
+  background-image:radial-gradient(circle at 15% 10%,#fbdfdc 0,transparent 40%),radial-gradient(circle at 90% 90%,#f3d9cf 0,transparent 45%)}
+.app{max-width:440px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center}
+.card{background:var(--paper);border-radius:22px;padding:26px 20px;box-shadow:0 10px 30px -12px rgba(120,50,70,.25);border:1px solid var(--line)}
+h1,h2{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;line-height:1.1}
+h1{font-size:3rem;color:var(--rose)}
+h2{font-size:2.4rem;color:var(--rose)}
+.eyebrow{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+p{margin:0}
+.stack{display:flex;flex-direction:column}
+.stack > * + *{margin-top:16px}
+.center{text-align:center}
+button{font:inherit;cursor:pointer;border:none}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.btn{background:var(--rose);color:#fff;font-weight:700;padding:15px 22px;border-radius:999px;font-size:1.05rem;box-shadow:0 6px 16px -6px var(--rose);transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn-ghost{background:transparent;color:var(--muted);font-weight:600;padding:10px;font-size:.92rem;text-decoration:underline;text-underline-offset:3px;align-self:center}
+.sig{font-family:var(--f-display);font-size:1.6rem;color:var(--ink)}
+
+/* attempts */
+.hearts{display:flex;justify-content:center}
+.hearts span + span{margin-left:8px}
+.hearts span{width:24px;height:24px;display:block}
+
+/* wheel */
+.stack > .wheel-wrap{margin:30px auto 4px}
+.wheel-wrap{position:relative;width:100%;max-width:320px}
+.wheel-wrap::before{content:"";display:block;padding-top:100%}
+.wheel-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;transition:transform 5s cubic-bezier(.12,.75,.1,1)}
+.pointer{position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-top:28px solid var(--ink);z-index:2;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
+.hub{position:absolute;top:50%;left:50%;width:56px;height:56px;transform:translate(-50%,-50%);border-radius:50%;background:var(--paper);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center}
+.hub span{width:26px;height:26px;display:block}
+
+/* prize card */
+.overlay{position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(74,36,51,.5);display:flex;align-items:center;justify-content:center;padding:20px 16px;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px));z-index:20;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.coupon{width:100%;max-width:380px;background:var(--paper);border-radius:20px;overflow:hidden;animation:pop .45s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{from{transform:scale(.7);opacity:0}}
+.coupon .head{background:var(--rose);color:#fff;padding:18px 20px 22px;text-align:center}
+.coupon.jackpot .head{background:var(--gold)}
+.coupon .head .eyebrow{color:#fff3f3}
+.coupon .head h3{font-family:var(--f-display);font-weight:400;font-size:2.3rem;margin:4px 0 0;line-height:1.1;text-wrap:balance}
+.coupon .perf{height:18px;background:radial-gradient(circle at 9px 0,var(--rose) 8px,transparent 9px) repeat-x;background-size:18px 18px}
+.coupon.jackpot .perf{background-image:radial-gradient(circle at 9px 0,var(--gold) 8px,transparent 9px)}
+.coupon .body{padding:6px 22px 22px;display:flex;flex-direction:column;text-align:center}
+.coupon .body > * + *{margin-top:16px}
+
+/* wins list on the final screen */
+.wins{display:flex;flex-direction:column}
+.wins > * + *{margin-top:10px}
+.win{display:flex;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;text-align:left}
+.win .ic{flex:none;width:34px;height:34px;margin-right:12px;border-radius:50%;background:var(--rose-soft);display:flex;align-items:center;justify-content:center}
+.win .ic span{width:18px;height:18px;display:block}
+.win.jackpot .ic{background:var(--gold-soft)}
+.win div{min-width:0}
+.win small{color:var(--muted);display:block}
+
+#confetti{position:fixed;top:0;left:0;pointer-events:none;z-index:30;width:100%;height:100%}
+
+/* meme clip pop-up */
+.pop{position:fixed;left:50%;bottom:0;z-index:25;pointer-events:none;opacity:0;transform:translate(-50%,110%);transition:transform .5s cubic-bezier(.3,1.4,.5,1),opacity .35s}
+.pop.in{opacity:1;transform:translate(-50%,-7vh) rotate(-2deg)}
+.pop.out{opacity:0;transform:translate(-50%,-7vh) rotate(-2deg) scale(.9)}
+.pop video{display:block;width:auto;height:auto;max-width:62vw;max-height:60vh;border-radius:18px;border:4px solid var(--paper);background:#fff;box-shadow:0 18px 40px -10px rgba(74,36,51,.55)}
+.hero-start{width:150px;margin:0 auto -6px;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px) rotate(-2deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<canvas id="confetti"></canvas>
+
+<script>
+/* Мем-ролики лежат рядом с этой страницей. Порядок = номера clip в CONFIG.spins */
+window.CLIPS = [
+  { src:"cat1.mp4", seconds:1.6, minMs:2800, loop:true },
+  { src:"cat2.mp4", seconds:3.84 },
+  { src:"cat3.mp4", seconds:5.23 }
+];
+</script>
+<script>
+/* ================================================================
+   НАСТРОЙКИ — здесь меняются тексты, сектора колеса и подарки
+   ================================================================ */
+const CONFIG = {
+  name: "Любимая",
+  from: "Твой муж",
+  // Внешность персонажа (цвета можно менять)
+  hero: { skin:"#f4d6c2", hair:"#6b4a30", shine:"#9c7752", eyes:"#7f8a58", shirt:"#3b3e35", collar:"#4a4d43", turtle:"#2c2b30" },
+  intro: "Сегодня твой день рождения, и я, как настоящий романтик, решил не покупать цветы, а написать игру. Правила простые: крутишь колесо и забираешь выигрыш. Колесо абсолютно честное. Почти.",
+
+  // Сектора колеса, по часовой стрелке, начиная сверху. jackpot — номер золотого сектора.
+  sectors: ["Те самые очки","Массаж","Ужин от меня","Неделя без посуды","Главный приз","Кино без комментариев","Сумку держу я","Любое желание"],
+  jackpot: 4,
+
+  // Что выпадает при каждом вращении, по порядку. sector — номер сектора выше (счёт с 0), clip — номер мем-ролика из clips.js (счёт с 0).
+  spins: [
+    { sector:1, clip:0, title:"Массаж 30 минут",
+      text:"Действует сегодня. Первые 15 минут считаются разминкой. Предъяви мужу." },
+    { sector:0, clip:1, title:"Те самые очки",
+      text:"Теперь ты будешь видеть всё: и красивый мир вокруг, и каждую мою ошибку в высоком разрешении." },
+    { sector:4, clip:2, title:"Фен Dyson",
+      text:"Нет, это не шутка. Настоящий Dyson, и он уже ждёт тебя. С днём рождения!" }
+  ]
+};
+/* ================================================================ */
+
+const $app = document.getElementById("app");
+const HEART = '<svg viewBox="0 0 24 24" width="100%" height="100%"><path d="M12 21s-7.5-4.6-10-9.3C.3 8.2 2.4 4 6.3 4c2.2 0 3.7 1.3 4.7 2.7C12 5.3 13.5 4 15.7 4c3.9 0 6 4.2 4.3 7.7C19.5 16.4 12 21 12 21z" fill="FILL" stroke="var(--rose)" stroke-width="1.6"/></svg>';
+const heart = on => HEART.replace("FILL", on ? "var(--rose)" : "none");
+const KEY = "bday-wheel-v1";
+const TOTAL = CONFIG.spins.length;
+let state = load();
+
+function load(){ try{ const s = JSON.parse(localStorage.getItem(KEY)); if(s && Number.isInteger(s.n) && s.n>=0 && s.n<=TOTAL) return s; }catch(e){} return {n:0, started:false}; }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+const isJackpot = sp => sp.sector === CONFIG.jackpot;
+
+/* ---------- screens ---------- */
+function renderStart(){
+  $app.innerHTML = `<div class="card stack center">
+    <div class="hero-start">${heroSVG("wave")}</div>
+    <p class="eyebrow">Особая игра</p>
+    <h1>С днём рождения, ${esc(CONFIG.name)}!</h1>
+    <p>${esc(CONFIG.intro)}</p>
+    <button class="btn" id="startBtn">Начать игру</button>
+    <p class="sig">${esc(CONFIG.from)}</p></div>`;
+  document.getElementById("startBtn").onclick = ()=>{ state.started=true; save(); renderWheel(); };
+}
+
+function attemptHearts(){
+  let h=""; for(let i=0;i<TOTAL;i++) h += `<span>${heart(i<state.n)}</span>`;
+  return `<div class="hearts" role="img" aria-label="Попытка ${Math.min(state.n+1,TOTAL)} из ${TOTAL}">${h}</div>`;
+}
+
+let rot = 0;
+function renderWheel(){
+  if(state.n>=TOTAL){ renderFinal(); return; }
+  const sectorsCount = CONFIG.sectors.length;
+  $app.innerHTML = `<div class="card stack center">
+    <div><p class="eyebrow">Попытка ${state.n+1} из ${TOTAL}</p><h2>Колесо фортуны</h2></div>
+    <div class="wheel-wrap"><div class="pointer"></div><canvas id="wheel" width="600" height="600" aria-label="Колесо с ${sectorsCount} секторами"></canvas>
+      <div class="hub"><span>${heart(true)}</span></div></div>
+    <button class="btn" id="spin">Крутить</button>
+    ${attemptHearts()}</div>`;
+  const cv = document.getElementById("wheel");
+  rot = 0;
+  drawWheel(cv);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>drawWheel(cv));
+  document.getElementById("spin").onclick = ()=>spin(cv);
+}
+
+function drawWheel(cv){
+  const ctx = cv.getContext("2d"), n = CONFIG.sectors.length, seg = Math.PI*2/n;
+  const css = getComputedStyle(document.documentElement), tok = k=>css.getPropertyValue(k).trim();
+  ctx.setTransform(1,0,0,1,300,300);
+  ctx.clearRect(-300,-300,600,600);
+  for(let k=0;k<n;k++){
+    const a0 = -Math.PI/2 + k*seg;
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,288,a0,a0+seg); ctx.closePath();
+    ctx.fillStyle = k===CONFIG.jackpot ? tok("--gold-soft") : (k%2 ? tok("--paper") : tok("--rose-soft"));
+    ctx.fill();
+    ctx.strokeStyle = tok("--rose"); ctx.lineWidth = 3; ctx.stroke();
+    ctx.save(); ctx.rotate(a0+seg/2); ctx.textAlign="right"; ctx.fillStyle = tok("--ink");
+    ctx.font = (k===CONFIG.jackpot?"800":"700")+" 23px Manrope, system-ui, sans-serif";
+    wrapText(ctx, CONFIG.sectors[k], 262, 0, 160, 26); ctx.restore();
+  }
+  ctx.beginPath(); ctx.arc(0,0,288,0,Math.PI*2); ctx.lineWidth=10; ctx.strokeStyle=tok("--gold"); ctx.stroke();
+}
+function wrapText(ctx, text, x, y, maxW, lh){
+  const words = text.split(" "), lines=[]; let line="";
+  for(const w of words){ const t=line?line+" "+w:w; if(ctx.measureText(t).width>maxW && line){lines.push(line);line=w;} else line=t; }
+  lines.push(line);
+  const start = y - (lines.length-1)*lh/2 + 8;
+  lines.forEach((l,k)=>ctx.fillText(l,x,start+k*lh));
+}
+
+function spin(cv){
+  const btn = document.getElementById("spin"); btn.disabled = true;
+  ensurePops(); unlockClips();
+  const sp = CONFIG.spins[state.n], n = CONFIG.sectors.length, segDeg = 360/n;
+  const jitter = (Math.random()-.5)*segDeg*.6;                       // stop at a random spot inside the sector
+  const land = ((360 - (sp.sector+.5)*segDeg + jitter) % 360 + 360) % 360;
+  const delta = (land - (rot%360) + 360) % 360;
+  rot += 360*5 + delta;
+  cv.style.transform = `rotate(${rot}deg)`;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  setTimeout(()=>{
+    const last = state.n === TOTAL-1;
+    state.n++; save();
+    popClip(sp, ()=>showPrize(sp, last));
+  }, reduce ? 300 : 5300);
+}
+
+function showPrize(sp, last){
+  const jp = isJackpot(sp);
+  confetti(jp ? 280 : 140);
+  const ov = document.createElement("div"); ov.className="overlay";
+  ov.innerHTML = `<div class="coupon ${jp?"jackpot":""}" role="dialog" aria-modal="true" aria-label="${esc(sp.title)}">
+    <div class="head"><p class="eyebrow">${jp?"Главный приз":`Выигрыш ${state.n} из ${TOTAL}`}</p><h3>${esc(sp.title)}</h3></div>
+    <div class="perf"></div>
+    <div class="body"><p>${esc(sp.text)}</p>
+      ${last?`<p class="sig">Люблю. Посуда сегодня моя. ${esc(CONFIG.from)}</p>`:""}
+      <button class="btn" id="ok">${last?"Спасибо!":"Забрать и крутить дальше"}</button></div></div>`;
+  document.body.appendChild(ov);
+  document.getElementById("ok").focus();
+  document.getElementById("ok").onclick = ()=>{ ov.remove(); renderWheel(); };
+}
+
+function renderFinal(){
+  const wins = CONFIG.spins.map((sp,i)=>`<div class="win ${isJackpot(sp)?"jackpot":""}"><div class="ic"><span>${heart(true)}</span></div>
+    <div><small>${isJackpot(sp)?"Главный приз":`Выигрыш ${i+1}`}</small><strong>${esc(sp.title)}</strong></div></div>`).join("");
+  $app.innerHTML = `<div class="card stack center">
+    <div class="hero-start">${heroSVG("wave")}</div>
+    <div><p class="eyebrow">Игра окончена</p><h2>Твои выигрыши</h2></div>
+    <div class="wins">${wins}</div>
+    <p>Колесо больше не крутится. Всё честно, как и обещал.</p>
+    <p class="sig">${esc(CONFIG.from)}</p>
+    <button class="btn-ghost" id="again">Сыграть ещё раз</button></div>`;
+  document.getElementById("again").onclick = ()=>{ state={n:0,started:true}; save(); renderWheel(); };
+}
+
+/* ---------- character ---------- */
+function heroSVG(mode){ // mode: "smile" | "kiss" | "wave"
+  const h = CONFIG.hero, ink="#4a2433";
+  const kissing = mode==="kiss";
+  const arm = mode==="wave" ? `<g style="transform-origin:160px 190px;animation:bob 1s ease-in-out infinite"><path d="M160 196 C178 176 186 150 182 128" stroke="${h.shirt}" stroke-width="20" stroke-linecap="round" fill="none"/><circle cx="182" cy="122" r="12" fill="${h.skin}"/></g>` : "";
+  // cartoon portrait: swept-up brown quiff, short sides, green-hazel eyes, long jaw, dark jacket + turtleneck
+  const jacket = `<path d="M22 240C22 190 56 172 100 172S178 190 178 240Z" fill="${h.shirt}"/>
+    <path d="M58 178L86 206L84 170Z M142 178L114 206L116 170Z" fill="${h.collar}"/>
+    <rect x="82" y="148" width="36" height="40" rx="12" fill="${h.turtle}"/>
+    <path d="M84 162H116M84 170H116" stroke="#1d1c20" stroke-width="1.5" opacity=".6"/>
+    <path d="M100 206V240" stroke="#1d1c20" stroke-width="3"/>`;
+  const eyes = kissing
+    ? `<path d="M69 101Q78 95 87 101M113 101Q122 95 131 101" stroke="${ink}" stroke-width="3.5" fill="none" stroke-linecap="round"/>`
+    : `<ellipse cx="78" cy="100" rx="9.5" ry="6.5" fill="#fff"/><ellipse cx="122" cy="100" rx="9.5" ry="6.5" fill="#fff"/>
+       <circle cx="79" cy="100.5" r="5" fill="${h.eyes}"/><circle cx="123" cy="100.5" r="5" fill="${h.eyes}"/>
+       <circle cx="79" cy="100.5" r="2.3" fill="#1f1a17"/><circle cx="123" cy="100.5" r="2.3" fill="#1f1a17"/>
+       <circle cx="80.6" cy="98.8" r="1.4" fill="#fff"/><circle cx="124.6" cy="98.8" r="1.4" fill="#fff"/>
+       <path d="M68 98Q78 91 88 98M112 98Q122 91 132 98" stroke="${ink}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
+  const mouth = kissing
+    ? `<path d="M92 140c0-6 7-8 8-3c1-5 8-3 8 3c0 6-5 9-8 9s-8-3-8-9z" fill="#d9737f" stroke="${ink}" stroke-width="2"/>`
+    : `<path d="M86 139Q100 146 115 137" stroke="#9c5f63" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+       <path d="M90 142Q100 149 110 142" stroke="#d9a39c" stroke-width="2" fill="none" stroke-linecap="round" opacity=".7"/>`;
+  return `<svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">${jacket}${arm}
+    <rect x="88" y="134" width="24" height="22" fill="${h.skin}"/>
+    <ellipse cx="45" cy="104" rx="9" ry="15" fill="${h.skin}"/><ellipse cx="155" cy="104" rx="9" ry="15" fill="${h.skin}"/>
+    <path d="M47 104Q42 104 44 112" stroke="#d9a58a" stroke-width="2" fill="none"/><path d="M153 104Q158 104 156 112" stroke="#d9a58a" stroke-width="2" fill="none"/>
+    <path d="M48 90C48 54 70 40 100 40S152 54 152 90C152 128 138 160 100 168C62 160 48 128 48 90Z" fill="${h.skin}"/>
+    <path d="M52 120C58 146 76 162 100 166C124 162 142 146 148 120C138 142 122 152 100 152S62 142 52 120Z" fill="${h.hair}" opacity=".16"/>
+    <path d="M46 96C38 70 42 40 68 25C90 12 130 10 150 28C164 42 162 72 154 96C152 82 148 72 142 66C128 56 110 52 94 55C78 58 62 66 54 78C50 84 48 90 46 96Z" fill="${h.hair}"/>
+    <path d="M48 90C46 76 48 66 52 58M152 90C154 76 152 66 148 58" stroke="${h.hair}" stroke-width="5" opacity=".55" fill="none"/>
+    <path d="M70 34C92 20 124 18 146 34M80 44C100 32 124 30 142 42M64 52C80 38 100 34 118 36" stroke="${h.shine}" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/>
+    <path d="M65 85Q78 80 91 84M109 84Q122 80 135 85" stroke="${h.hair}" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+    <path d="M101 104Q97 120 93 124Q100 128 107 125" stroke="#c98f78" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+    <circle cx="66" cy="124" r="1.6" fill="#8a5a48" opacity=".7"/>
+    <ellipse cx="64" cy="122" rx="9" ry="5" fill="#e8949b" opacity="${kissing?.75:.3}"/><ellipse cx="136" cy="122" rx="9" ry="5" fill="#e8949b" opacity="${kissing?.75:.3}"/>
+    ${eyes}${mouth}</svg>`;
+}
+/* ---------- meme clips ---------- */
+const pops = [];
+function ensurePops(){
+  if(pops.length || !window.CLIPS) return;
+  window.CLIPS.forEach(c=>{
+    const wrap = document.createElement("div"); wrap.className="pop"; wrap.setAttribute("aria-hidden","true");
+    const v = document.createElement("video");
+    v.src = c.src; v.preload="auto"; v.playsInline = true; v.setAttribute("playsinline",""); v.loop = !!c.loop;
+    wrap.appendChild(v); document.body.appendChild(wrap); pops.push({wrap, v, c});
+  });
+}
+// Вызывается из нажатия на «Крутить»: браузеры разрешают звук позже, только если ролик уже запускали по тапу
+function unlockClips(){
+  pops.forEach(({v})=>{ try{ const p=v.play(); if(p&&p.then) p.then(()=>{v.pause();v.currentTime=0;}).catch(()=>{}); }catch(e){} });
+}
+function popClip(sp, done){
+  const item = pops[sp.clip];
+  if(!item){ setTimeout(done,300); return; }
+  const {wrap, v, c} = item;
+  v.currentTime = 0;
+  const p = v.play();
+  if(p && p.catch) p.catch(()=>{ v.muted = true; v.play().catch(()=>{}); });   // звук не разрешили: играем без звука
+  requestAnimationFrame(()=>requestAnimationFrame(()=>wrap.classList.add("in")));
+  const ms = Math.max(c.seconds*1000, c.minMs||0);
+  setTimeout(()=>wrap.classList.add("out"), ms+200);
+  setTimeout(()=>{ wrap.classList.remove("in","out"); v.pause(); done(); }, ms+750);
+}
+
+/* ---------- confetti ---------- */
+function confetti(count){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const c = document.getElementById("confetti"), x = c.getContext("2d");
+  c.width = innerWidth; c.height = innerHeight;
+  const cols = ["#d9737f","#c9974a","#f2cfd0","#5d9a74","#fff"];
+  const ps = Array.from({length:count},()=>({x:c.width/2,y:c.height*.35,vx:(Math.random()-.5)*14,vy:-Math.random()*14-4,s:Math.random()*7+4,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:cols[Math.random()*cols.length|0]}));
+  let t = 0;
+  (function f(){ x.clearRect(0,0,c.width,c.height);
+    ps.forEach(p=>{p.vy+=.35;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore();});
+    if(++t<160) requestAnimationFrame(f); else x.clearRect(0,0,c.width,c.height); })();
+}
+
+if(state.n>=TOTAL) renderFinal(); else if(state.started) renderWheel(); else renderStart();
+</script>
+</body>
+</html>
