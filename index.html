@@ -8,38 +8,40 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marck+Script&family=Manrope:wght@400;500;700;800&display=swap">
 <style>
-/* Layout: one phone-width column; a blush card with a big wheel in the middle. Single light look by choice. */
+/* Тёмная романтичная тема: светящееся колесо, золотой сектор сверху, панель выигранных подарков. Одна колонка под телефон. */
 :root{
-  color-scheme:light;
-  --bg:#f7e9e6; --paper:#fffaf7; --ink:#4a2433; --muted:#8c6670;
-  --rose:#d9737f; --rose-soft:#f2cfd0; --gold:#c9974a; --gold-soft:#f4e1b8; --peach:#f6dccb; --line:#ead3d0;
+  color-scheme:dark;
+  --bg:#150a18; --paper:#2a1431; --ink:#fdeef2; --muted:#dbb3c1;
+  --rose:#ff6f9f; --rose-soft:#5c2347; --gold:#f0bd6a; --gold-soft:#fbe3a6; --line:rgba(255,184,208,.24);
   --f-display:"Marck Script","Segoe Script",cursive;
   --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 *{box-sizing:border-box}
+html{background:#150a18}
 html,body{height:100%;margin:0}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+body{background-color:#150a18;color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
   padding:20px 16px;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
   padding-top:max(20px,env(safe-area-inset-top,0px));padding-bottom:max(20px,env(safe-area-inset-bottom,0px));
-  background-image:radial-gradient(circle at 15% 10%,#fbdfdc 0,transparent 40%),radial-gradient(circle at 90% 90%,#f3d9cf 0,transparent 45%)}
+  background-image:radial-gradient(circle at 88% 4%,rgba(255,196,120,.30) 0,transparent 22%),radial-gradient(circle at 96% 16%,rgba(130,160,255,.20) 0,transparent 24%),radial-gradient(circle at 6% 96%,rgba(255,90,140,.28) 0,transparent 46%),linear-gradient(160deg,#1f1023,#10070f);
+  background-repeat:no-repeat;background-size:100% 100%}
 .app{max-width:440px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center}
-.card{background:var(--paper);border-radius:22px;padding:26px 20px;box-shadow:0 10px 30px -12px rgba(120,50,70,.25);border:1px solid var(--line)}
-h1,h2{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;line-height:1.1}
-h1{font-size:3rem;color:var(--rose)}
-h2{font-size:2.4rem;color:var(--rose)}
-.eyebrow{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.card{background:linear-gradient(180deg,rgba(66,28,62,.80),rgba(34,16,38,.86));border-radius:24px;padding:26px 20px;box-shadow:0 18px 50px -18px rgba(0,0,0,.75);border:1px solid var(--line)}
+h1,h2{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;line-height:1.1;color:#ffe3c4;text-shadow:0 0 18px rgba(255,150,120,.6),0 0 3px rgba(255,210,170,.6)}
+h1{font-size:3rem}
+h2{font-size:2.4rem}
+.eyebrow{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700}
 p{margin:0}
 .stack{display:flex;flex-direction:column}
 .stack > * + *{margin-top:16px}
 .center{text-align:center}
 button{font:inherit;cursor:pointer;border:none}
 button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
-.btn{background:var(--rose);color:#fff;font-weight:700;padding:15px 22px;border-radius:999px;font-size:1.05rem;box-shadow:0 6px 16px -6px var(--rose);transition:transform .15s}
+.btn{background:linear-gradient(180deg,#ff8ab0,#df3f7e);color:#fff;font-weight:700;padding:15px 22px;border-radius:999px;font-size:1.1rem;border:1px solid rgba(255,225,235,.55);box-shadow:0 0 22px rgba(255,100,150,.55),0 8px 18px -8px rgba(0,0,0,.65);transition:transform .15s}
 .btn:active{transform:scale(.97)}
 .btn:disabled{opacity:.5;cursor:default}
 .btn-ghost{background:transparent;color:var(--muted);font-weight:600;padding:10px;font-size:.92rem;text-decoration:underline;text-underline-offset:3px;align-self:center}
-.sig{font-family:var(--f-display);font-size:1.6rem;color:var(--ink)}
+.sig{font-family:var(--f-display);font-size:1.6rem;color:#ffe3c4}
 
 /* attempts */
 .hearts{display:flex;justify-content:center}
@@ -47,34 +49,48 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .hearts span{width:24px;height:24px;display:block}
 
 /* wheel */
-.stack > .wheel-wrap{margin:30px auto 4px}
-.wheel-wrap{position:relative;width:100%;max-width:320px}
+.stack > .wheel-wrap{margin:34px auto 6px}
+.wheel-wrap{position:relative;z-index:0;width:100%;max-width:330px}
 .wheel-wrap::before{content:"";display:block;padding-top:100%}
+.wheel-wrap::after{content:"";position:absolute;left:-9%;top:-9%;right:-9%;bottom:-9%;border-radius:50%;background:radial-gradient(circle,rgba(255,110,150,.40) 52%,rgba(255,110,150,0) 72%);z-index:-1;pointer-events:none}
 .wheel-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;transition:transform 5s cubic-bezier(.12,.75,.1,1)}
-.pointer{position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-top:28px solid var(--ink);z-index:2;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
-.hub{position:absolute;top:50%;left:50%;width:56px;height:56px;transform:translate(-50%,-50%);border-radius:50%;background:var(--paper);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center}
-.hub span{width:26px;height:26px;display:block}
+.pointer{position:absolute;top:-24px;left:50%;margin-left:-20px;width:40px;height:52px;z-index:3;filter:drop-shadow(0 4px 8px rgba(0,0,0,.55))}
+.pointer svg{display:block;width:100%;height:100%}
+.hub{position:absolute;top:50%;left:50%;width:62px;height:62px;margin:-31px 0 0 -31px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff9fbd,#d63d78 60%,#8a1f4c);border:4px solid var(--gold);box-shadow:0 0 20px rgba(255,120,160,.85);display:flex;align-items:center;justify-content:center}
+.hub span{width:28px;height:28px;display:block}
+.hub path{fill:#fff;stroke:#fff}
+
+/* prizes panel */
+.panel{border:1px solid var(--line);border-radius:20px;padding:16px 16px 8px;background:rgba(18,7,22,.5);text-align:left}
+.panel h3{font-family:var(--f-display);font-weight:400;font-size:1.8rem;color:#ffe3c4;text-align:center;margin:0 0 8px;line-height:1.1;text-shadow:0 0 14px rgba(255,150,120,.5)}
+.row{display:flex;align-items:center;padding:11px 2px;border-top:1px solid var(--line)}
+.row .ic{flex:none;width:38px;font-size:1.5rem;text-align:center;line-height:1}
+.row .t{flex:1;min-width:0;margin:0 10px;font-weight:700}
+.row .t small{display:block;color:var(--muted);font-weight:500;font-size:.82rem}
+.row .ok{flex:none;color:var(--gold);font-weight:800;font-size:1.2rem}
+.row.locked .t{color:var(--gold-soft)}
 
 /* prize card */
-.overlay{position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(74,36,51,.5);display:flex;align-items:center;justify-content:center;padding:20px 16px;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px));z-index:20;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
-.coupon{width:100%;max-width:380px;background:var(--paper);border-radius:20px;overflow:hidden;animation:pop .45s cubic-bezier(.2,1.4,.4,1)}
+.overlay{position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(10,4,14,.68);display:flex;align-items:center;justify-content:center;padding:20px 16px;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px));z-index:20;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.coupon{--cp:#d9507f;width:100%;max-width:380px;background:#2a1431;border:1px solid var(--line);border-radius:20px;overflow:hidden;animation:pop .45s cubic-bezier(.2,1.4,.4,1);box-shadow:0 0 40px rgba(255,100,150,.35)}
+.coupon.jackpot{--cp:#e2a94d;box-shadow:0 0 50px rgba(255,200,100,.5)}
 @keyframes pop{from{transform:scale(.7);opacity:0}}
-.coupon .head{background:var(--rose);color:#fff;padding:18px 20px 22px;text-align:center}
-.coupon.jackpot .head{background:var(--gold)}
+.coupon .head{background:var(--cp);color:#fff;padding:18px 20px 22px;text-align:center}
+.coupon.jackpot .head{color:#3a1a10}
 .coupon .head .eyebrow{color:#fff3f3}
+.coupon.jackpot .head .eyebrow{color:#5a3216}
 .coupon .head h3{font-family:var(--f-display);font-weight:400;font-size:2.3rem;margin:4px 0 0;line-height:1.1;text-wrap:balance}
-.coupon .perf{height:18px;background:radial-gradient(circle at 9px 0,var(--rose) 8px,transparent 9px) repeat-x;background-size:18px 18px}
-.coupon.jackpot .perf{background-image:radial-gradient(circle at 9px 0,var(--gold) 8px,transparent 9px)}
+.coupon .perf{height:18px;background:radial-gradient(circle at 9px 0,var(--cp) 8px,transparent 9px) repeat-x;background-size:18px 18px}
 .coupon .body{padding:6px 22px 22px;display:flex;flex-direction:column;text-align:center}
 .coupon .body > * + *{margin-top:16px}
 
 /* wins list on the final screen */
 .wins{display:flex;flex-direction:column}
 .wins > * + *{margin-top:10px}
-.win{display:flex;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;text-align:left}
+.win{display:flex;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:14px;padding:12px 14px;text-align:left}
 .win .ic{flex:none;width:34px;height:34px;margin-right:12px;border-radius:50%;background:var(--rose-soft);display:flex;align-items:center;justify-content:center}
 .win .ic span{width:18px;height:18px;display:block}
-.win.jackpot .ic{background:var(--gold-soft)}
+.win.jackpot .ic{background:#6b4a1f}
 .win div{min-width:0}
 .win small{color:var(--muted);display:block}
 
@@ -84,7 +100,7 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .pop{position:fixed;left:50%;bottom:0;z-index:25;pointer-events:none;opacity:0;transform:translate(-50%,110%);transition:transform .5s cubic-bezier(.3,1.4,.5,1),opacity .35s}
 .pop.in{opacity:1;transform:translate(-50%,-7vh) rotate(-2deg)}
 .pop.out{opacity:0;transform:translate(-50%,-7vh) rotate(-2deg) scale(.9)}
-.pop video{display:block;width:auto;height:auto;max-width:62vw;max-height:60vh;border-radius:18px;border:4px solid var(--paper);background:#fff;box-shadow:0 18px 40px -10px rgba(74,36,51,.55)}
+.pop video{display:block;width:auto;height:auto;max-width:62vw;max-height:60vh;border-radius:18px;border:4px solid var(--gold);background:#000;box-shadow:0 0 40px rgba(255,120,160,.55),0 18px 40px -10px rgba(0,0,0,.7)}
 .hero-start{width:150px;margin:0 auto -6px;animation:bob 2.4s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-6px) rotate(-2deg)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -114,16 +130,17 @@ const CONFIG = {
   intro: "Сегодня твой день рождения. Цветы я купил, но романтик из меня никакой, поэтому остальное придётся выигрывать. Правила простые: крутишь колесо и забираешь выигрыш. Колесо абсолютно честное. Почти.",
 
   // Сектора колеса, по часовой стрелке, начиная сверху. jackpot — номер золотого сектора.
-  sectors: ["Те самые очки","Массаж","Ужин от меня","Неделя без посуды","Главный приз","Кино без комментариев","Сумку держу я","Любое желание"],
-  jackpot: 4,
+  sectors: ["Главный приз","Массаж","Ужин от меня","Неделя без посуды","Те самые очки","Кино без комментариев","Сумка за мной","Любое желание"],
+  icons:   ["🎁","💆","🍽️","🧽","🕶️","🎬","👜","✨"],
+  jackpot: 0,
 
   // Что выпадает при каждом вращении, по порядку. sector — номер сектора выше (счёт с 0), clip — номер мем-ролика из clips.js (счёт с 0).
   spins: [
     { sector:1, clip:0, title:"Массаж 30 минут",
       text:"Действует сегодня. Первые 15 минут считаются разминкой." },
-    { sector:0, clip:1, title:"Те самые очки",
+    { sector:4, clip:1, title:"Те самые очки",
       text:"Теперь можно прятать глаза от солнца и делать вид, что не слышишь мои шутки." },
-    { sector:4, clip:2, title:"Главный приз",
+    { sector:0, clip:2, title:"Главный приз",
       text:"Нет, это не шутка. Он не помещается в телефон и уже ждёт тебя в реальной жизни. С днём рождения!" }
   ]
 };
@@ -164,10 +181,11 @@ function renderWheel(){
   const sectorsCount = CONFIG.sectors.length;
   $app.innerHTML = `<div class="card stack center">
     <div><p class="eyebrow">Попытка ${state.n+1} из ${TOTAL}</p><h2>Колесо фортуны</h2></div>
-    <div class="wheel-wrap"><div class="pointer"></div><canvas id="wheel" width="600" height="600" aria-label="Колесо с ${sectorsCount} секторами"></canvas>
+    <div class="wheel-wrap"><div class="pointer"><svg viewBox="0 0 40 52" aria-hidden="true"><defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe0b0"/><stop offset="1" stop-color="#eea04c"/></linearGradient></defs><path d="M20 50C20 50 3 32 3 18a17 17 0 0 1 34 0c0 14-17 32-17 32z" fill="url(#pg)" stroke="#fff0d2" stroke-width="1.5"/><path d="M20 28s-8-4.8-8-10.2C12 14.6 14.4 13 16.5 13c1.5 0 2.8.8 3.5 2 .7-1.2 2-2 3.5-2C25.6 13 28 14.6 28 17.8 28 23.2 20 28 20 28z" fill="#ff6f9f"/></svg></div><canvas id="wheel" width="600" height="600" aria-label="Колесо с ${sectorsCount} секторами"></canvas>
       <div class="hub"><span>${heart(true)}</span></div></div>
-    <button class="btn" id="spin">Крутить</button>
-    ${attemptHearts()}</div>`;
+    <button class="btn" id="spin">🎁 Крутить</button>
+    ${attemptHearts()}
+    ${panelHTML()}</div>`;
   const cv = document.getElementById("wheel");
   rot = 0;
   drawWheel(cv);
@@ -175,22 +193,42 @@ function renderWheel(){
   document.getElementById("spin").onclick = ()=>spin(cv);
 }
 
+function panelHTML(){
+  let rows = "";
+  for(let i=0;i<state.n;i++){ const sp = CONFIG.spins[i];
+    rows += `<div class="row"><span class="ic">${CONFIG.icons[sp.sector]}</span><span class="t">${esc(sp.title)}</span><span class="ok">✓</span></div>`; }
+  if(!CONFIG.spins.slice(0,state.n).some(isJackpot))
+    rows += `<div class="row locked"><span class="ic">🔒</span><span class="t">Главный приз<small>Крути, чтобы открыть!</small></span></div>`;
+  return `<div class="panel"><h3>Твои выигранные подарки</h3>${rows}</div>`;
+}
+
 function drawWheel(cv){
-  const ctx = cv.getContext("2d"), n = CONFIG.sectors.length, seg = Math.PI*2/n;
-  const css = getComputedStyle(document.documentElement), tok = k=>css.getPropertyValue(k).trim();
+  const ctx = cv.getContext("2d"), n = CONFIG.sectors.length, seg = Math.PI*2/n, R = 266;
+  const pal = [["#e8528f","#b02c63"],["#a63a7b","#7a2258"]];
   ctx.setTransform(1,0,0,1,300,300);
   ctx.clearRect(-300,-300,600,600);
   for(let k=0;k<n;k++){
-    const a0 = -Math.PI/2 + k*seg;
-    ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,288,a0,a0+seg); ctx.closePath();
-    ctx.fillStyle = k===CONFIG.jackpot ? tok("--gold-soft") : (k%2 ? tok("--paper") : tok("--rose-soft"));
-    ctx.fill();
-    ctx.strokeStyle = tok("--rose"); ctx.lineWidth = 3; ctx.stroke();
-    ctx.save(); ctx.rotate(a0+seg/2); ctx.textAlign="right"; ctx.fillStyle = tok("--ink");
-    ctx.font = (k===CONFIG.jackpot?"800":"700")+" 23px Manrope, system-ui, sans-serif";
-    wrapText(ctx, CONFIG.sectors[k], 262, 0, 160, 26); ctx.restore();
+    const a0 = -Math.PI/2 + k*seg - seg/2, jp = k===CONFIG.jackpot;
+    const g = ctx.createRadialGradient(0,0,40,0,0,R);
+    if(jp){ g.addColorStop(0,"#fff3c4"); g.addColorStop(1,"#e3a64a"); }
+    else { const c = pal[k%2]; g.addColorStop(0,c[0]); g.addColorStop(1,c[1]); }
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,R,a0,a0+seg); ctx.closePath();
+    ctx.fillStyle = g; ctx.fill();
+    ctx.strokeStyle = "rgba(255,225,200,.5)"; ctx.lineWidth = 2; ctx.stroke();
+    const am = a0+seg/2, tx = Math.cos(am)*186, ty = Math.sin(am)*186;   // подписи стоят прямо, не вверх ногами
+    ctx.textAlign = "center"; ctx.fillStyle = "#fff"; ctx.font = "32px 'Apple Color Emoji','Segoe UI Emoji',sans-serif";
+    ctx.fillText(CONFIG.icons[k], tx, ty-18);
+    ctx.fillStyle = jp ? "#4a2410" : "#fff3f6";
+    ctx.font = (jp?"800":"700")+" 16px Manrope, system-ui, sans-serif";
+    wrapText(ctx, CONFIG.sectors[k], tx, ty+16, 118, 19);
   }
-  ctx.beginPath(); ctx.arc(0,0,288,0,Math.PI*2); ctx.lineWidth=10; ctx.strokeStyle=tok("--gold"); ctx.stroke();
+  const rg = ctx.createLinearGradient(-300,-300,300,300);
+  rg.addColorStop(0,"#fff1c4"); rg.addColorStop(.5,"#c98a35"); rg.addColorStop(1,"#f8d78a");
+  ctx.beginPath(); ctx.arc(0,0,281,0,Math.PI*2); ctx.lineWidth = 28; ctx.strokeStyle = rg; ctx.stroke();
+  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.lineWidth = 3; ctx.strokeStyle = "#ffe9b8"; ctx.stroke();
+  ctx.shadowColor = "#ffd27a"; ctx.shadowBlur = 14; ctx.fillStyle = "#fff8de";
+  for(let b=0;b<24;b++){ const a = b*Math.PI*2/24; ctx.beginPath(); ctx.arc(Math.cos(a)*281, Math.sin(a)*281, 5.5, 0, Math.PI*2); ctx.fill(); }
+  ctx.shadowBlur = 0;
 }
 function wrapText(ctx, text, x, y, maxW, lh){
   const words = text.split(" "), lines=[]; let line="";
@@ -205,7 +243,7 @@ function spin(cv){
   ensurePops(); unlockClips();
   const sp = CONFIG.spins[state.n], n = CONFIG.sectors.length, segDeg = 360/n;
   const jitter = (Math.random()-.5)*segDeg*.6;                       // stop at a random spot inside the sector
-  const land = ((360 - (sp.sector+.5)*segDeg + jitter) % 360 + 360) % 360;
+  const land = ((360 - sp.sector*segDeg + jitter) % 360 + 360) % 360;
   const delta = (land - (rot%360) + 360) % 360;
   rot += 360*5 + delta;
   cv.style.transform = `rotate(${rot}deg)`;
