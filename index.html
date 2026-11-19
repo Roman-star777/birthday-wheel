@@ -101,6 +101,8 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .pop.in{opacity:1;transform:translate(-50%,-7vh) rotate(-2deg)}
 .pop.out{opacity:0;transform:translate(-50%,-7vh) rotate(-2deg) scale(.9)}
 .pop video{display:block;width:auto;height:auto;max-width:62vw;max-height:60vh;border-radius:18px;border:4px solid var(--gold);background:#000;box-shadow:0 0 40px rgba(255,120,160,.55),0 18px 40px -10px rgba(0,0,0,.7)}
+.vid{position:relative;display:inline-block;align-self:center;line-height:0;border-radius:20px;overflow:hidden;border:3px solid var(--gold);box-shadow:0 0 36px rgba(255,120,160,.5)}
+.vid video{display:block;width:auto;height:auto;max-width:100%;max-height:56vh;background:#000}
 .hero-start{width:150px;margin:0 auto -6px;animation:bob 2.4s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-6px) rotate(-2deg)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -159,6 +161,19 @@ function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",
 const isJackpot = sp => sp.sector === CONFIG.jackpot;
 
 /* ---------- screens ---------- */
+function renderGreeting(){
+  $app.innerHTML = `<div class="card stack center">
+    <p class="eyebrow">Для тебя</p>
+    <div class="vid"><video id="gv" src="greeting.mp4" poster="greeting.jpg" playsinline webkit-playsinline preload="auto"></video></div>
+    <button class="btn" id="gplay">▶ Смотреть поздравление</button>
+    <button class="btn-ghost" id="gskip">Пропустить</button></div>`;
+  const v = document.getElementById("gv"), b = document.getElementById("gplay");
+  const next = ()=>{ try{ v.pause(); }catch(e){} renderStart(); };
+  b.onclick = ()=>{ v.play().catch(()=>{ v.muted = true; v.play().catch(()=>{}); }); b.style.display = "none"; };
+  v.onended = ()=>{ b.textContent = "Дальше"; b.style.display = ""; b.onclick = next; };
+  document.getElementById("gskip").onclick = next;
+}
+
 function renderStart(){
   $app.innerHTML = `<div class="card stack center">
     <div class="hero-start">${heroSVG("wave")}</div>
@@ -360,7 +375,7 @@ function confetti(count){
     if(++t<160) requestAnimationFrame(f); else x.clearRect(0,0,c.width,c.height); })();
 }
 
-if(state.n>=TOTAL) renderFinal(); else if(state.started) renderWheel(); else renderStart();
+if(state.n>=TOTAL) renderFinal(); else if(state.started) renderWheel(); else renderGreeting();
 </script>
 </body>
 </html>
