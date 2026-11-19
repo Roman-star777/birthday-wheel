@@ -153,6 +153,7 @@ const HEART = '<svg viewBox="0 0 24 24" width="100%" height="100%"><path d="M12 
 const heart = on => HEART.replace("FILL", on ? "var(--rose)" : "none");
 const KEY = "bday-wheel-v1";
 const TOTAL = CONFIG.spins.length;
+if(/[?&]reset/.test(location.search)){ try{ localStorage.removeItem(KEY); }catch(e){} }
 let state = load();
 
 function load(){ try{ const s = JSON.parse(localStorage.getItem(KEY)); if(s && Number.isInteger(s.n) && s.n>=0 && s.n<=TOTAL) return s; }catch(e){} return {n:0, started:false}; }
@@ -375,7 +376,7 @@ function confetti(count){
     if(++t<160) requestAnimationFrame(f); else x.clearRect(0,0,c.width,c.height); })();
 }
 
-if(state.n>=TOTAL) renderFinal(); else if(state.started) renderWheel(); else renderGreeting();
+if(state.n>=TOTAL) renderFinal(); else if(state.n>0) renderWheel(); else renderGreeting();
 </script>
 </body>
 </html>
