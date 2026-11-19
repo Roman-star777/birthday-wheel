@@ -168,7 +168,7 @@ const isJackpot = sp => sp.sector === CONFIG.jackpot;
 function renderGreeting(){
   $app.innerHTML = `<div class="card stack center">
     <p class="eyebrow">Для тебя</p>
-    <div class="vid"><video id="gv" src="greeting.mp4" poster="greeting.jpg" playsinline webkit-playsinline preload="auto"></video><span class="tag b">Рома</span><span class="tag p">Яна</span></div>
+    <div class="vid"><video id="gv" src="greeting.mp4" poster="greeting.jpg" playsinline webkit-playsinline preload="auto"></video></div>
     <button class="btn" id="gplay">▶ Смотреть поздравление</button>
     <button class="btn-ghost" id="gskip">Пропустить</button></div>`;
   const v = document.getElementById("gv"), b = document.getElementById("gplay");
